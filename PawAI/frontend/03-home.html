@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="en" class="auth-pending">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home - PawAI</title>
+  <style>
+    html.auth-pending body { visibility: hidden; }
+    :root {
+      --bg: #090a10;
+      --panel: #141218;
+      --panel-soft: #1c1621;
+      --field: #100f15;
+      --line: #2d2833;
+      --line-strong: #453545;
+      --text: #f8f5fa;
+      --muted: #9c96aa;
+      --pink: #ff3d91;
+      --pink-soft: #ff5aa4;
+      --green: #2ee98f;
+      --amber: #ffbd57;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .45);
+      --pink-glow: 0 18px 42px rgba(255, 61, 145, .28);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 78% 8%, rgba(255, 61, 145, .18), transparent 34rem),
+        radial-gradient(circle at 12% 90%, rgba(46, 233, 143, .09), transparent 26rem),
+        linear-gradient(135deg, #08090f 0%, #121018 58%, #08090f 100%);
+      font-family: var(--font);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .camera-modal[hidden] { display: none; }
+
+    .camera-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(4, 4, 8, .8);
+      backdrop-filter: blur(8px);
+    }
+
+    .camera-dialog {
+      width: min(720px, 100%);
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .camera-header,
+    .camera-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 20px;
+    }
+
+    .camera-header h2 { margin: 0; font-size: 20px; }
+
+    .camera-preview {
+      display: block;
+      width: 100%;
+      max-height: min(60vh, 520px);
+      background: #050509;
+      object-fit: cover;
+    }
+
+    .camera-controls { border-top: 1px solid var(--line); justify-content: flex-end; }
+
+    .page {
+      width: min(1240px, calc(100% - 40px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .navbar,
+    .brand,
+    .nav-actions,
+    .hero,
+    .metric-row,
+    .analysis-header,
+    .analysis-item,
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar {
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+    }
+
+    .brand-icon svg,
+    .pet-mark svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .brand-icon,
+    .pet-mark {
+      animation: logoPulse 3.8s ease-in-out infinite;
+      transition: transform .22s ease, filter .22s ease;
+    }
+
+    .brand:hover .brand-icon,
+    .pet-mark:hover {
+      transform: rotate(-6deg) scale(1.08);
+      filter: drop-shadow(0 0 14px rgba(255, 61, 145, .7));
+    }
+
+    .brand .brand-accent,
+    .nav-link.active,
+    .accent {
+      color: var(--pink);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .nav-actions {
+      gap: 12px;
+    }
+
+    .ghost-btn,
+    .primary-btn,
+    .icon-btn,
+    .action-card {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      border-radius: 14px;
+      font-weight: 850;
+    }
+
+    .ghost-btn,
+    .icon-btn {
+      border: 1px solid rgba(255, 61, 145, .38);
+      color: var(--pink);
+      background: rgba(255, 61, 145, .1);
+    }
+
+    .ghost-btn {
+      padding: 0 20px;
+    }
+
+    .primary-btn {
+      gap: 10px;
+      padding: 0 22px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+    }
+
+    .hero-pet-image {
+      width: 86px;
+      height: 86px;
+      margin-bottom: 14px;
+      border: 3px solid rgba(255, 255, 255, .78);
+      border-radius: 22px;
+      object-fit: cover;
+      background: var(--panel-soft);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .28);
+    }
+
+    .icon-btn {
+      width: 46px;
+      flex: 0 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 520px;
+      align-items: stretch;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background:
+        linear-gradient(90deg, rgba(9, 10, 16, .92) 0%, rgba(9, 10, 16, .78) 44%, rgba(9, 10, 16, .25) 100%),
+        url("assets/home-cat-heart.jpg") center right / cover;
+      box-shadow: var(--shadow);
+      animation: heroReveal .7s ease both;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent 45%, rgba(9, 10, 16, .3) 100%);
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: min(610px, 100%);
+      padding: 56px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 34px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 61, 145, .35);
+      border-radius: 999px;
+      color: var(--pink);
+      background: rgba(255, 61, 145, .11);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 560px;
+      margin: 18px 0 16px;
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 .22em;
+    }
+
+    .hero-word {
+      display: inline-block;
+      opacity: 0;
+      transform-origin: 50% 80%;
+      animation: wordPop .72s cubic-bezier(.2, 1.6, .32, 1) forwards, wordFloat 3.8s ease-in-out infinite;
+    }
+
+    .hero-word:nth-child(1) {
+      animation-delay: .08s, .95s;
+    }
+
+    .hero-word:nth-child(2) {
+      animation-delay: .24s, 1.18s;
+    }
+
+    .hero-word.accent {
+      background: linear-gradient(90deg, #fff, var(--pink-soft), var(--pink), #fff);
+      background-size: 260% 100%;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      text-shadow: 0 0 24px rgba(255, 61, 145, .45);
+      animation: wordPop .72s cubic-bezier(.2, 1.6, .32, 1) .24s forwards, wordFloat 3.8s ease-in-out 1.18s infinite, textShimmer 2.4s linear 1s infinite;
+    }
+
+    .hero-copy {
+      max-width: 520px;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: copySlide .7s ease .46s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: copySlide .7s ease .62s forwards;
+    }
+
+    .hero-card {
+      position: absolute;
+      right: 28px;
+      bottom: 28px;
+      width: min(360px, calc(100% - 56px));
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 22px;
+      background: rgba(20, 18, 24, .78);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      z-index: 2;
+      animation: floatCard 4.8s ease-in-out infinite;
+    }
+
+    .pet-mark {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+    }
+
+    .metric-row {
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .metric {
+      flex: 1;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 20px;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(255, 61, 145, .12), transparent 23rem),
+        rgba(20, 18, 24, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .section-title {
+      margin-bottom: 16px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .quick-actions {
+      display: grid;
+      gap: 14px;
+    }
+
+    .action-card {
+      justify-content: flex-start;
+      gap: 14px;
+      width: 100%;
+      min-height: 96px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: rgba(255, 255, 255, .035);
+      text-align: left;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 61, 145, .5);
+      background: rgba(255, 61, 145, .08);
+    }
+
+    .primary-btn,
+    .ghost-btn,
+    .nav-link,
+    .icon-btn {
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .primary-btn:hover,
+    .ghost-btn:hover,
+    .nav-link:hover,
+    .icon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(255, 61, 145, .24);
+    }
+
+    .action-icon {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      place-items: center;
+      color: #fff;
+      background: rgba(255, 61, 145, .24);
+      font-weight: 900;
+    }
+
+    .action-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 17px;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .insight {
+      min-height: 132px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .insight strong {
+      display: block;
+      margin: 10px 0 6px;
+      font-size: 18px;
+    }
+
+    .analysis-card {
+      padding: 24px;
+    }
+
+    .analysis-header {
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .analysis-header h2 {
+      margin-bottom: 0;
+      font-size: 24px;
+    }
+
+    .analysis-item {
+      gap: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .analysis-image {
+      width: 170px;
+      height: 120px;
+      border-radius: 16px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    @keyframes heroReveal {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes floatCard {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes wordPop {
+      0% {
+        opacity: 0;
+        transform: translateY(34px) rotate(-4deg) scale(.86);
+        filter: blur(8px);
+      }
+
+      70% {
+        opacity: 1;
+        transform: translateY(-6px) rotate(2deg) scale(1.05);
+        filter: blur(0);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) rotate(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes wordFloat {
+      0%,
+      100% {
+        transform: translateY(0) rotate(0);
+      }
+
+      50% {
+        transform: translateY(-5px) rotate(-1deg);
+      }
+    }
+
+    @keyframes textShimmer {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      100% {
+        background-position: 260% 50%;
+      }
+    }
+
+    @keyframes copySlide {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes logoPulse {
+      0%,
+      100% {
+        box-shadow: var(--pink-glow);
+      }
+
+      50% {
+        box-shadow: 0 18px 54px rgba(255, 61, 145, .48), 0 0 0 8px rgba(255, 61, 145, .08);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    .analysis-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .analysis-copy h3 {
+      margin-bottom: 8px;
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      border: 1px solid rgba(46, 233, 143, .32);
+      color: var(--green);
+      background: rgba(46, 233, 143, .1);
+    }
+
+    .media-input {
+      display: none;
+    }
+
+    .bottom-nav {
+      justify-content: center;
+      gap: 8px;
+      margin-top: 22px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(20, 18, 24, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .nav-link.active {
+      background: rgba(255, 61, 145, .11);
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        width: min(100% - 28px, 760px);
+      }
+
+      .navbar,
+      .hero,
+      .analysis-item {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero {
+        min-height: 640px;
+        background-position: center bottom;
+        background-size: cover;
+      }
+
+      .hero-content {
+        padding: 34px;
+      }
+
+      .hero-card {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        margin: auto 24px 24px;
+      }
+
+      .dashboard,
+      .insight-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .analysis-image {
+        width: 100%;
+        height: 220px;
+      }
+
+      .bottom-nav {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .brand {
+        font-size: 21px;
+      }
+
+      .hero-content,
+      .panel,
+      .analysis-card {
+        padding: 22px;
+      }
+
+      .hero-card {
+        width: calc(100% - 28px);
+        margin: auto 14px 18px;
+      }
+
+      .hero-actions,
+      .metric-row {
+        flex-direction: column;
+      }
+
+      .primary-btn,
+      .ghost-btn,
+      .metric {
+        width: 100%;
+      }
+
+      .nav-link {
+        flex: 1 1 44%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html" aria-label="PawAI landing page">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+          </svg>
+        </span>
+        Paw<span class="brand-accent">AI</span>
+      </a>
+
+      <div class="nav-actions">
+        <a class="ghost-btn" href="06-chatbot.html">Ask PawBot</a>
+        <a class="ghost-btn" id="logoutLink" href="#">Logout</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="homeTitle">
+        <div class="hero-content">
+          <span class="pill">AI-powered pet care dashboard</span>
+          <h1 id="homeTitle" class="hero-title">
+            <span class="hero-word">Hello,</span>
+            <span class="hero-word accent" id="heroName">there.</span>
+          </h1>
+          <p class="hero-copy" id="heroCopy">Record a moment, upload a sound, or choose a photo. PawAI turns your pet's mood and behavior cues into calm, practical guidance.</p>
+          <div class="hero-actions">
+            <button class="primary-btn" type="button" data-tool="camera">Start Camera</button>
+            <button class="ghost-btn" type="button" data-tool="gallery">Upload Media</button>
+          </div>
+          <div id="homeMessage" class="message" role="status" aria-live="polite"></div>
+        </div>
+
+        <aside class="hero-card" aria-label="Whiskers status">
+          <img id="heroPetImage" class="hero-pet-image" src="assets/home-cat-heart.jpg" alt="A relaxed PawAI cat">
+          <span class="pet-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+            </svg>
+          </span>
+          <h2 id="petCardTitle">Your pet is ready for today.</h2>
+          <p class="muted" id="petCardMeta">Add a pet profile to see details here.</p>
+          <div class="metric-row">
+            <div class="metric">
+              <strong>94%</strong>
+              <span class="muted">Happy cues</span>
+            </div>
+            <div class="metric">
+              <strong>6</strong>
+              <span class="muted">Analyses</span>
+            </div>
+            <div class="metric">
+              <strong>Calm</strong>
+              <span class="muted">Today</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <div class="dashboard">
+        <section class="card panel" aria-labelledby="actionsTitle">
+          <h2 id="actionsTitle" class="section-title">Start an analysis</h2>
+          <div class="quick-actions">
+            <button class="action-card" type="button" data-tool="camera">
+              <span class="action-icon">CA</span>
+              <span>
+                <strong>Camera</strong>
+                <span class="muted">Capture a live behavior moment</span>
+              </span>
+            </button>
+
+            <button class="action-card" type="button" data-tool="audio">
+              <span class="action-icon">AU</span>
+              <span>
+                <strong>Audio</strong>
+                <span class="muted">Record or upload meows and purrs</span>
+              </span>
+            </button>
+
+            <button class="action-card" type="button" data-tool="gallery">
+              <span class="action-icon">GL</span>
+              <span>
+                <strong>Gallery</strong>
+                <span class="muted">Choose a photo or short video</span>
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card analysis-card" aria-labelledby="latestTitle">
+          <div class="analysis-header">
+            <h2 id="latestTitle">Latest insight</h2>
+            <span class="pill">Video Analysis</span>
+          </div>
+
+          <article class="analysis-item">
+            <img
+              class="analysis-image"
+              src="assets/home-cat-heart.jpg"
+              alt="Whiskers relaxing with a red heart toy"
+            >
+            <div class="analysis-copy">
+              <h3>Whiskers seems happy, alert, and ready to play.</h3>
+              <p class="muted">2 May 2025, 10:30 AM</p>
+            </div>
+            <button class="icon-btn" type="button" data-action="Playing AI speech output">Play</button>
+          </article>
+
+          <div class="insight-grid">
+            <div class="insight">
+              <span class="pill">Mood</span>
+              <strong>Playful</strong>
+              <p class="muted">Bright eyes and relaxed posture suggest confidence.</p>
+            </div>
+            <div class="insight">
+              <span class="pill">Care</span>
+              <strong>Hydration</strong>
+              <p class="muted">Offer fresh water after active play sessions.</p>
+            </div>
+            <div class="insight">
+              <span class="pill">Next</span>
+              <strong>Ask PawBot</strong>
+              <p class="muted">Get a simple explanation of any unusual behavior.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <input id="cameraInput" class="media-input" type="file" accept="image/*,video/*" capture="environment">
+      <input id="audioInput" class="media-input" type="file" accept="audio/*" capture="microphone">
+      <input id="galleryInput" class="media-input" type="file" accept="image/*,video/*">
+    </main>
+
+    <div id="cameraModal" class="camera-modal" role="dialog" aria-modal="true" aria-labelledby="cameraTitle" hidden>
+      <div class="camera-dialog">
+        <div class="camera-header">
+          <div><h2 id="cameraTitle">Camera</h2><span class="muted">Frame your pet, then capture a moment.</span></div>
+          <button id="closeCamera" class="icon-btn" type="button" aria-label="Close camera">Close</button>
+        </div>
+        <video id="cameraPreview" class="camera-preview" autoplay playsinline muted></video>
+        <div class="camera-controls">
+          <button id="cancelCamera" class="ghost-btn" type="button">Cancel</button>
+          <button id="captureCamera" class="primary-btn" type="button">Capture Photo</button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <a class="nav-link active" href="03-home.html">Home</a>
+      <a class="nav-link" href="04-account.html">History</a>
+      <a class="nav-link" href="06-chatbot.html">PawBot</a>
+      <a class="nav-link" href="05-settings.html">Settings</a>
+    </nav>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script>
+    const homeMessage = document.querySelector("#homeMessage");
+    const analysisImage = document.querySelector(".analysis-image");
+    const analysisTitle = document.querySelector(".analysis-copy h3");
+    const analysisTime = document.querySelector(".analysis-copy .muted");
+    const actionButtons = document.querySelectorAll("[data-action]");
+    const toolButtons = document.querySelectorAll("[data-tool]");
+    const mediaInputs = {
+      camera: document.querySelector("#cameraInput"),
+      audio: document.querySelector("#audioInput"),
+      gallery: document.querySelector("#galleryInput")
+    };
+    const cameraModal = document.querySelector("#cameraModal");
+    const cameraPreview = document.querySelector("#cameraPreview");
+    let cameraStream = null;
+
+    function showHomeMessage(text) {
+      if (!homeMessage) return;
+      homeMessage.textContent = text;
+      homeMessage.className = "message success show";
+    }
+
+    function updateLatestAnalysis(file, source) {
+      const selectedAt = new Date().toLocaleString([], {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+
+      if (analysisTitle) {
+        analysisTitle.textContent = `${file.name} is ready for ${source} analysis.`;
+      }
+
+      if (analysisTime) {
+        analysisTime.textContent = selectedAt;
+      }
+
+      if (analysisImage && file.type.startsWith("image/")) {
+        analysisImage.src = URL.createObjectURL(file);
+      }
+    }
+
+    function openMediaTool(tool) {
+      if (tool === "camera") {
+        openCamera();
+        return;
+      }
+      const input = mediaInputs[tool];
+      if (!input) return;
+      input.click();
+    }
+
+    function closeCamera() {
+      if (cameraStream) cameraStream.getTracks().forEach((track) => track.stop());
+      cameraStream = null;
+      cameraPreview.srcObject = null;
+      cameraModal.hidden = true;
+    }
+
+    async function openCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showHomeMessage("Camera access is not supported in this browser. Please use Upload Media instead.");
+        return;
+      }
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" } },
+          audio: false
+        });
+        cameraPreview.srcObject = cameraStream;
+        cameraModal.hidden = false;
+      } catch (error) {
+        showHomeMessage("Camera access was not granted. Allow camera access and try again.");
+      }
+    }
+
+    document.querySelector("#closeCamera").addEventListener("click", closeCamera);
+    document.querySelector("#cancelCamera").addEventListener("click", closeCamera);
+    document.querySelector("#captureCamera").addEventListener("click", () => {
+      if (!cameraPreview.videoWidth || !cameraPreview.videoHeight) {
+        showHomeMessage("The camera is still starting. Please try again in a moment.");
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = cameraPreview.videoWidth;
+      canvas.height = cameraPreview.videoHeight;
+      canvas.getContext("2d").drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const file = new File([blob], `pawai-camera-${Date.now()}.jpg`, { type: "image/jpeg" });
+        updateLatestAnalysis(file, "Camera");
+        closeCamera();
+        showHomeMessage("Camera photo captured and ready for analysis.");
+      }, "image/jpeg", .92);
+    });
+    window.addEventListener("pagehide", closeCamera);
+
+    actionButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        showHomeMessage(button.dataset.action);
+      });
+    });
+
+    toolButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        openMediaTool(button.dataset.tool);
+      });
+    });
+
+    Object.entries(mediaInputs).forEach(([tool, input]) => {
+      input.addEventListener("change", () => {
+        const file = input.files[0];
+        if (!file) return;
+
+        const label = tool.charAt(0).toUpperCase() + tool.slice(1);
+        updateLatestAnalysis(file, label);
+        showHomeMessage(`${label} file selected: ${file.name}`);
+      });
+    });
+
+    PawAIAuth.bindLogout("#logoutLink");
+
+    function describePet(pet) {
+      const parts = [pet.breed, pet.age, pet.gender].filter(Boolean);
+      return parts.length ? parts.join(", ") : "Profile details coming soon.";
+    }
+
+    (async function initHomePage() {
+      const user = await PawAIAuth.requireUser();
+      if (!user) return; // requireUser already redirected to the login page
+
+      const heroName = document.querySelector("#heroName");
+      if (heroName) heroName.textContent = `${user.username}.`;
+
+      try {
+        const pets = await PawAIApi.listPets();
+        const pet = pets[0];
+        if (pet) {
+          const heroCopy = document.querySelector("#heroCopy");
+          if (heroCopy) {
+            heroCopy.textContent = `Record a moment, upload a sound, or choose a photo. PawAI turns ${pet.name}'s mood and behavior cues into calm, practical guidance.`;
+          }
+          const petCardTitle = document.querySelector("#petCardTitle");
+          if (petCardTitle) petCardTitle.textContent = `${pet.name} is ready for today.`;
+          const petCardMeta = document.querySelector("#petCardMeta");
+          if (petCardMeta) petCardMeta.textContent = describePet(pet);
+          const heroPetImage = document.querySelector("#heroPetImage");
+          if (heroPetImage) heroPetImage.alt = `${pet.name}'s PawAI profile image`;
+        }
+      } catch (error) {
+        // Pet data is a nice-to-have on this page; an authenticated user
+        // with no pets yet (or a transient error) shouldn't block the page.
+      }
+    })();
+  </script>
+</body>
+</html>

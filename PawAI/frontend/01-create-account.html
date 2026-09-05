@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Account - PawAI</title>
+  <style>
+    :root {
+      --bg: #090a10;
+      --panel: #141218;
+      --panel-soft: #1c1621;
+      --field: #100f15;
+      --line: #2d2833;
+      --line-strong: #453545;
+      --text: #f8f5fa;
+      --muted: #9c96aa;
+      --pink: #ff3d91;
+      --pink-soft: #ff5aa4;
+      --green: #2ee98f;
+      --amber: #ffbd57;
+      --danger: #ff6f91;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .45);
+      --pink-glow: 0 18px 42px rgba(255, 61, 145, .28);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 78% 8%, rgba(255, 61, 145, .18), transparent 34rem),
+        radial-gradient(circle at 12% 90%, rgba(46, 233, 143, .09), transparent 26rem),
+        linear-gradient(135deg, #08090f 0%, #121018 58%, #08090f 100%);
+      font-family: var(--font);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 34px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+      font-size: 22px;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .brand .brand-accent {
+      color: var(--pink);
+    }
+
+    .login-link,
+    .primary-btn,
+    .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      border-radius: 14px;
+      font-weight: 850;
+    }
+
+    .login-link,
+    .ghost-btn {
+      padding: 0 20px;
+      border: 1px solid rgba(255, 61, 145, .38);
+      color: var(--pink);
+      background: rgba(255, 61, 145, .1);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(420px, 1fr);
+      gap: 28px;
+      align-items: center;
+    }
+
+    .intro {
+      padding: 34px 28px 34px 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 61, 145, .35);
+      border-radius: 999px;
+      color: var(--pink);
+      background: rgba(255, 61, 145, .11);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 560px;
+      margin-bottom: 18px;
+      font-size: clamp(40px, 6vw, 68px);
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+
+    .accent {
+      color: var(--pink);
+    }
+
+    .intro-text {
+      max-width: 540px;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .feature-list {
+      display: grid;
+      max-width: 540px;
+      gap: 14px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(20, 18, 24, .78);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, .24);
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      color: #fff;
+      background: rgba(255, 61, 145, .24);
+      font-size: 20px;
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .card {
+      padding: 32px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(255, 61, 145, .12), transparent 23rem),
+        rgba(20, 18, 24, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .form-header {
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .form-header .brand-icon {
+      margin: 0 auto 12px;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+
+    .avatar-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .avatar-picker {
+      position: relative;
+      width: 124px;
+      height: 124px;
+    }
+
+    .avatar {
+      width: 124px;
+      height: 124px;
+      border: 4px solid rgba(255, 255, 255, .85);
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--panel-soft);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, .34);
+    }
+
+    .camera-btn {
+      position: absolute;
+      right: -4px;
+      bottom: 2px;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 61, 145, .55);
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 13px;
+      outline: none;
+      color: var(--text);
+      background: var(--field);
+      transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    input::placeholder {
+      color: #6f6878;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--pink);
+      background: #131018;
+      box-shadow: 0 0 0 4px rgba(255, 61, 145, .14);
+    }
+
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 20px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .terms input {
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+      min-height: 18px;
+      margin-top: 2px;
+      accent-color: var(--pink);
+    }
+
+    .primary-btn {
+      width: 100%;
+      gap: 10px;
+      min-height: 52px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+      font-size: 16px;
+    }
+
+    .primary-btn:disabled {
+      cursor: not-allowed;
+      opacity: .65;
+      box-shadow: none;
+    }
+
+    .signin-text {
+      margin: 18px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .signin-text a {
+      color: var(--pink);
+      font-weight: 850;
+    }
+
+    .message {
+      display: none;
+      margin: 16px 0 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      border: 1px solid rgba(46, 233, 143, .32);
+      color: var(--green);
+      background: rgba(46, 233, 143, .1);
+    }
+
+    .message.error {
+      border: 1px solid rgba(255, 111, 145, .38);
+      color: var(--danger);
+      background: rgba(255, 111, 145, .1);
+    }
+
+    .brand-icon {
+      animation: logoPulse 3.8s ease-in-out infinite;
+      transition: transform .22s ease, filter .22s ease;
+    }
+
+    .brand:hover .brand-icon,
+    .form-header .brand-icon:hover {
+      transform: rotate(-6deg) scale(1.08);
+      filter: drop-shadow(0 0 14px rgba(255, 61, 145, .7));
+    }
+
+    .intro,
+    .card {
+      animation: riseIn .72s ease both;
+    }
+
+    .card {
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+    }
+
+    .card:hover,
+    .feature:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 61, 145, .45);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .52);
+    }
+
+    .feature,
+    .primary-btn,
+    .ghost-btn,
+    .login-link {
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .primary-btn:hover,
+    .ghost-btn:hover,
+    .login-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(255, 61, 145, .28);
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes logoPulse {
+      0%,
+      100% {
+        box-shadow: var(--pink-glow);
+      }
+
+      50% {
+        box-shadow: 0 18px 54px rgba(255, 61, 145, .48), 0 0 0 8px rgba(255, 61, 145, .08);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 940px) {
+      .page {
+        width: min(100% - 28px, 680px);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .intro {
+        padding: 10px 0 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .navbar {
+        margin-bottom: 22px;
+      }
+
+      .brand {
+        font-size: 21px;
+      }
+
+      .login-link {
+        min-height: 42px;
+        padding: 0 14px;
+      }
+
+      .card {
+        padding: 22px;
+        border-radius: 20px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html" aria-label="PawAI landing page">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+          </svg>
+        </span>
+        Paw<span class="brand-accent">AI</span>
+      </a>
+      <a class="login-link" href="02-login.html">Login</a>
+    </header>
+
+    <main class="layout">
+      <section class="intro" aria-labelledby="pageTitle">
+        <span class="pill">Pet-first AI</span>
+        <h1 id="pageTitle">Create your <span class="accent">PawAI account.</span></h1>
+        <p class="intro-text">Understand your pet better with AI-powered behavior analysis, history, and a personal pet assistant.</p>
+
+        <div class="feature-list">
+          <article class="feature">
+            <span class="feature-icon">AI</span>
+            <div>
+              <strong>AI-powered insights</strong>
+              <span class="muted">Analyze video, audio, and images.</span>
+            </div>
+          </article>
+
+          <article class="feature">
+            <span class="feature-icon">PB</span>
+            <div>
+              <strong>PawBot assistant</strong>
+              <span class="muted">Ask questions about your pet anytime.</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="formTitle">
+        <div class="form-header">
+          <div class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+            </svg>
+          </div>
+          <h2 id="formTitle">Create Account</h2>
+          <p class="muted">Let's create your pet's profile</p>
+        </div>
+
+        <form id="accountForm" novalidate>
+          <div class="avatar-wrap">
+            <label class="avatar-picker" for="avatarInput" aria-label="Upload pet photo">
+              <img
+                id="avatarPreview"
+                class="avatar"
+                src="assets/home-cat-heart.jpg"
+                alt="Whiskers relaxing with a red heart toy"
+              >
+              <span class="camera-btn" aria-hidden="true">+</span>
+              <input id="avatarInput" type="file" accept="image/*" hidden>
+            </label>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="petName">Pet Name</label>
+              <input id="petName" name="petName" type="text" placeholder="e.g. Bruno" required>
+            </div>
+
+            <div class="field">
+              <label for="breed">Breed</label>
+              <input id="breed" name="breed" type="text" placeholder="e.g. Persian" required>
+            </div>
+
+            <div class="field">
+              <label for="age">Age</label>
+              <input id="age" name="age" type="text" placeholder="2 years" required>
+            </div>
+
+            <div class="field">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender" required>
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="email">Email Address</label>
+              <input id="email" name="email" type="email" placeholder="you@example.com" required>
+            </div>
+
+            <div class="field">
+              <label for="userId">Create User ID</label>
+              <input id="userId" name="userId" type="text" placeholder="bruno_love" minlength="3" maxlength="50" pattern="[a-zA-Z0-9_.\-]+" title="3-50 characters: letters, numbers, underscore, dot, or hyphen" required>
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" placeholder="At least 8 characters, letters + numbers" minlength="8" required>
+            </div>
+
+            <div class="field">
+              <label for="confirmPassword">Confirm Password</label>
+              <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm password" minlength="8" required>
+            </div>
+          </div>
+
+          <label class="terms" for="terms">
+            <input id="terms" name="terms" type="checkbox" required>
+            <span>I agree to the Terms &amp; Privacy Policy</span>
+          </label>
+
+          <button class="primary-btn" type="submit">Create Account</button>
+          <div id="formMessage" class="message" role="status" aria-live="polite"></div>
+        </form>
+
+        <p class="signin-text">Already have an account? <a href="02-login.html">Login</a></p>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script>
+    const accountForm = document.querySelector("#accountForm");
+    const avatarInput = document.querySelector("#avatarInput");
+    const avatarPreview = document.querySelector("#avatarPreview");
+    const formMessage = document.querySelector("#formMessage");
+
+    function showMessage(type, text) {
+      formMessage.textContent = text;
+      formMessage.className = `message ${type} show`;
+    }
+
+    function getFirstInvalidField(form) {
+      return Array.from(form.elements).find((field) => {
+        if (!field.willValidate) return false;
+        return !field.checkValidity();
+      });
+    }
+
+    avatarInput.addEventListener("change", () => {
+      const image = avatarInput.files[0];
+      if (!image) return;
+
+      if (!image.type.startsWith("image/")) {
+        showMessage("error", "Please choose a valid pet image.");
+        avatarInput.value = "";
+        return;
+      }
+
+      avatarPreview.src = URL.createObjectURL(image);
+      showMessage("success", "Pet photo selected successfully.");
+    });
+
+    const submitButton = accountForm.querySelector(".primary-btn");
+    let isSubmitting = false;
+
+    function setLoading(loading) {
+      isSubmitting = loading;
+      submitButton.disabled = loading;
+      submitButton.textContent = loading ? "Creating account..." : "Create Account";
+    }
+
+    // Maps a backend field name (from a 422 validation error) to the input
+    // that should receive focus/messaging. The backend's `pet` object is
+    // nested, so its field names arrive as e.g. "name" - same as our
+    // petName input's underlying concept.
+    const fieldNameMap = {
+      email: "email",
+      username: "userId",
+      password: "password",
+      name: "petName",
+      breed: "breed",
+      age: "age",
+      gender: "gender"
+    };
+
+    accountForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (isSubmitting) return; // guard against duplicate submissions
+
+      const invalidField = getFirstInvalidField(accountForm);
+      const password = accountForm.password.value;
+      const confirmPassword = accountForm.confirmPassword.value;
+
+      if (invalidField) {
+        invalidField.focus();
+        showMessage("error", "Please complete all required fields correctly.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        accountForm.confirmPassword.focus();
+        showMessage("error", "Password and confirm password must match.");
+        return;
+      }
+
+      // NOTE: the backend's /api/auth/register endpoint accepts JSON only
+      // and does not yet expose a way to upload a pet photo (there's no
+      // multipart/avatar field on RegisterRequest and no separate upload
+      // endpoint). The photo picker above still works for local preview,
+      // but the image itself isn't sent anywhere yet - wiring that up needs
+      // a backend change first.
+      const payload = {
+        email: accountForm.email.value.trim(),
+        username: accountForm.userId.value.trim(),
+        password,
+        pet: {
+          name: accountForm.petName.value.trim(),
+          breed: accountForm.breed.value.trim() || null,
+          age: accountForm.age.value.trim() || null,
+          gender: accountForm.gender.value || null
+        }
+      };
+
+      setLoading(true);
+      try {
+        await PawAIApi.register(payload);
+        showMessage("success", "Account created. Opening your PawAI home page.");
+        window.location.href = "03-home.html";
+      } catch (error) {
+        if (error instanceof PawAIApi.ApiError) {
+          if (error.fieldErrors && error.fieldErrors.length) {
+            const first = error.fieldErrors[0];
+            const inputId = fieldNameMap[first.field];
+            const input = inputId && accountForm.elements[inputId];
+            if (input) input.focus();
+          }
+          showMessage("error", error.message);
+        } else {
+          showMessage("error", "Something went wrong. Please try again.");
+        }
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

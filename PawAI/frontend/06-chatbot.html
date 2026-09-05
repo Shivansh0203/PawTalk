@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en" class="auth-pending">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PawBot - PawAI</title>
+  <style>
+    html.auth-pending body { visibility: hidden; }
+    :root {
+      --bg: #090a10;
+      --panel: #141218;
+      --panel-soft: #1c1621;
+      --field: #100f15;
+      --line: #2d2833;
+      --line-strong: #453545;
+      --text: #f8f5fa;
+      --muted: #9c96aa;
+      --pink: #ff3d91;
+      --pink-soft: #ff5aa4;
+      --green: #2ee98f;
+      --danger: #ff6f91;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .45);
+      --pink-glow: 0 18px 42px rgba(255, 61, 145, .28);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 78% 8%, rgba(255, 61, 145, .18), transparent 34rem),
+        radial-gradient(circle at 12% 90%, rgba(46, 233, 143, .09), transparent 26rem),
+        linear-gradient(135deg, #08090f 0%, #121018 58%, #08090f 100%);
+      font-family: var(--font);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 40px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .navbar,
+    .brand,
+    .chat-header,
+    .pet-card,
+    .composer,
+    .bottom-nav,
+    .tools {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar {
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .brand-icon,
+    .bot-mark {
+      animation: logoPulse 3.8s ease-in-out infinite;
+      transition: transform .22s ease, filter .22s ease;
+    }
+
+    .brand:hover .brand-icon,
+    .bot-mark:hover {
+      transform: rotate(-6deg) scale(1.08);
+      filter: drop-shadow(0 0 14px rgba(255, 61, 145, .7));
+    }
+
+    .brand .brand-accent,
+    .nav-link.active,
+    .accent {
+      color: var(--pink);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .ghost-btn,
+    .icon-btn,
+    .send-btn,
+    .quick-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      border-radius: 14px;
+      font-weight: 850;
+    }
+
+    .ghost-btn,
+    .icon-btn,
+    .quick-btn {
+      border: 1px solid rgba(255, 61, 145, .38);
+      color: var(--pink);
+      background: rgba(255, 61, 145, .1);
+    }
+
+    .ghost-btn {
+      padding: 0 20px;
+    }
+
+    .icon-btn {
+      width: 46px;
+      flex: 0 0 auto;
+    }
+
+    .icon-btn.is-listening {
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, .72fr) minmax(360px, 1.28fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .side-panel,
+    .chat-shell {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(255, 61, 145, .12), transparent 23rem),
+        rgba(20, 18, 24, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .side-panel {
+      padding: 24px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: clamp(34px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .panel-copy {
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 61, 145, .35);
+      border-radius: 999px;
+      color: var(--pink);
+      background: rgba(255, 61, 145, .11);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .pet-card {
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .03);
+      margin-bottom: 18px;
+    }
+
+    .avatar {
+      width: 62px;
+      height: 62px;
+      border: 3px solid rgba(255, 255, 255, .75);
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--panel-soft);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .28);
+    }
+
+    .pet-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 18px;
+    }
+
+    .quick-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .quick-btn {
+      justify-content: flex-start;
+      min-height: 48px;
+      padding: 0 14px;
+      text-align: left;
+    }
+
+    .chat-shell {
+      display: grid;
+      min-height: 690px;
+      overflow: hidden;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .chat-header {
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(9, 10, 16, .42);
+    }
+
+    .chat-title h2 {
+      margin-bottom: 4px;
+      font-size: 24px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(46, 233, 143, .1);
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+      padding: 24px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 82%;
+      animation: messagePop .32s ease both;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      justify-content: flex-end;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+    }
+
+    .bubble {
+      padding: 14px 16px;
+      border-radius: 18px;
+      line-height: 1.55;
+      font-size: 15px;
+    }
+
+    .message.user .bubble {
+      border-bottom-right-radius: 6px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+    }
+
+    .message.bot .bubble {
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 6px;
+      color: var(--text);
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .bot-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      place-items: center;
+      flex: 0 0 auto;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+    }
+
+    .bot-mark svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+
+    .bubble-meta {
+      display: block;
+      margin-top: 8px;
+      color: rgba(255, 255, 255, .65);
+      font-size: 12px;
+    }
+
+    .message.bot .bubble-meta {
+      color: var(--muted);
+    }
+
+    .composer-area {
+      padding: 18px 22px 22px;
+      border-top: 1px solid var(--line);
+      background: rgba(9, 10, 16, .42);
+    }
+
+    .suggestions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .composer {
+      gap: 10px;
+    }
+
+    .chat-input {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      outline: none;
+      color: var(--text);
+      background: var(--field);
+    }
+
+    .chat-input::placeholder {
+      color: #6f6878;
+    }
+
+    .chat-input:focus {
+      border-color: var(--pink);
+      background: #131018;
+      box-shadow: 0 0 0 4px rgba(255, 61, 145, .14);
+    }
+
+    .send-btn {
+      width: 52px;
+      min-height: 50px;
+      flex: 0 0 auto;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+      font-size: 18px;
+    }
+
+    .bottom-nav {
+      justify-content: center;
+      gap: 8px;
+      margin-top: 22px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(20, 18, 24, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .nav-link.active {
+      background: rgba(255, 61, 145, .11);
+    }
+
+    .side-panel,
+    .chat-shell {
+      animation: riseIn .72s ease both;
+    }
+
+    .ghost-btn,
+    .icon-btn,
+    .send-btn,
+    .quick-btn,
+    .nav-link {
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .ghost-btn:hover,
+    .icon-btn:hover,
+    .send-btn:hover,
+    .quick-btn:hover,
+    .nav-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(255, 61, 145, .24);
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes messagePop {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes logoPulse {
+      0%,
+      100% {
+        box-shadow: var(--pink-glow);
+      }
+
+      50% {
+        box-shadow: 0 18px 54px rgba(255, 61, 145, .48), 0 0 0 8px rgba(255, 61, 145, .08);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        width: min(100% - 28px, 680px);
+      }
+
+      .navbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-shell {
+        min-height: 620px;
+      }
+
+      .message {
+        max-width: 96%;
+      }
+
+      .bottom-nav {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .brand {
+        font-size: 21px;
+      }
+
+      .ghost-btn {
+        min-height: 42px;
+        padding: 0 14px;
+      }
+
+      .chat-header,
+      .composer {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .tools {
+        justify-content: flex-end;
+      }
+
+      .icon-btn,
+      .send-btn {
+        width: 100%;
+      }
+
+      .side-panel,
+      .chat-shell {
+        border-radius: 20px;
+      }
+
+      .nav-link {
+        flex: 1 1 44%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html" aria-label="PawAI landing page">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+          </svg>
+        </span>
+        Paw<span class="brand-accent">AI</span>
+      </a>
+
+      <div class="tools">
+        <span class="pill"><span class="status-dot"></span> PawBot online</span>
+        <a class="ghost-btn" id="logoutLink" href="02-login.html">Logout</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="side-panel" aria-labelledby="panelTitle">
+        <span class="pill">AI pet assistant</span>
+        <h1 id="panelTitle">Ask <span class="accent">PawBot</span></h1>
+        <p class="muted panel-copy" id="panelCopy">Talk or type about your pet. PawBot can explain behavior, food concerns, moods, and when it may be time to contact a vet.</p>
+
+        <section class="pet-card" aria-label="Current pet">
+          <img
+            class="avatar"
+            id="petAvatar"
+            src="assets/home-cat-heart.jpg"
+            alt="Pet photo"
+          >
+          <div>
+            <strong id="petCardName">Your pet</strong>
+            <p class="muted" id="petCardMeta">No pet profile yet</p>
+          </div>
+        </section>
+
+        <div class="quick-list" aria-label="Quick questions">
+          <button class="quick-btn" type="button" data-prompt="Why is my pet meowing continuously?">Why is my pet meowing?</button>
+          <button class="quick-btn" type="button" data-prompt="What food is best for my Persian cat?">Food suggestion</button>
+          <button class="quick-btn" type="button" data-prompt="Is this behavior normal for my cat?">Is this normal?</button>
+          <button class="quick-btn" type="button" data-prompt="When should I contact a vet?">When should I see a vet?</button>
+        </div>
+      </aside>
+
+      <section class="chat-shell" aria-labelledby="chatTitle">
+        <header class="chat-header">
+          <div class="chat-title">
+            <h2 id="chatTitle">PawBot Chat</h2>
+            <span class="status"><span class="status-dot"></span> Voice and text ready</span>
+          </div>
+          <button class="icon-btn" id="speakLastButton" type="button" aria-label="Speak last PawBot reply">Play</button>
+        </header>
+
+        <div class="messages" id="messages" aria-live="polite">
+          <article class="message bot">
+            <span class="bot-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+              </svg>
+            </span>
+            <div class="bubble">
+              <span id="initialBotMessage">Hi, I am PawBot. Tell me what your pet is doing, or use the mic button and speak your question.</span>
+              <span class="bubble-meta">Just now</span>
+            </div>
+          </article>
+        </div>
+
+        <form class="composer-area" id="chatForm">
+          <div class="suggestions" aria-label="Suggested prompts">
+            <button class="quick-btn" type="button" data-prompt="Whiskers is hiding under the bed. What does it mean?">Hiding</button>
+            <button class="quick-btn" type="button" data-prompt="Whiskers is purring and blinking slowly. Is she happy?">Purring</button>
+            <button class="quick-btn" type="button" data-prompt="Whiskers is not eating today. What should I check first?">Not eating</button>
+          </div>
+
+          <div class="composer">
+            <button class="icon-btn" id="voiceButton" type="button" aria-label="Start voice input">Mic</button>
+            <input class="chat-input" id="chatInput" type="text" placeholder="Ask anything about your pet..." autocomplete="off">
+            <button class="send-btn" type="submit" aria-label="Send message">Send</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <a class="nav-link" href="03-home.html">Home</a>
+      <a class="nav-link" href="04-account.html">History</a>
+      <a class="nav-link active" href="06-chatbot.html">PawBot</a>
+      <a class="nav-link" href="05-settings.html">Settings</a>
+    </nav>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script>
+    const chatForm = document.querySelector("#chatForm");
+    const chatInput = document.querySelector("#chatInput");
+    const messages = document.querySelector("#messages");
+    const voiceButton = document.querySelector("#voiceButton");
+    const speakLastButton = document.querySelector("#speakLastButton");
+    const quickButtons = document.querySelectorAll("[data-prompt]");
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+    let lastBotReply = "";
+
+    function getTime() {
+      return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    function pawSvg() {
+      return `
+        <span class="bot-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+          </svg>
+        </span>
+      `;
+    }
+
+    function addMessage(type, text) {
+      const article = document.createElement("article");
+      article.className = `message ${type}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = text;
+
+      const meta = document.createElement("span");
+      meta.className = "bubble-meta";
+      meta.textContent = getTime();
+      bubble.appendChild(meta);
+
+      if (type === "bot") {
+        article.innerHTML = pawSvg();
+      }
+
+      article.appendChild(bubble);
+      messages.appendChild(article);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function buildReply(question) {
+      const text = question.toLowerCase();
+
+      if (text.includes("not eating") || text.includes("food")) {
+        return "Check water, recent diet changes, stress, and whether Whiskers has vomiting or low energy. If she refuses food for 24 hours, contact a vet.";
+      }
+
+      if (text.includes("meow") || text.includes("loud")) {
+        return "Continuous meowing can mean attention-seeking, hunger, stress, boredom, or discomfort. Since loud noises can upset cats, give her a quiet space and watch for pain signs.";
+      }
+
+      if (text.includes("hiding")) {
+        return "Hiding often means Whiskers wants safety or quiet. Make a calm space with water nearby, then check whether she is eating, moving normally, and using the litter box.";
+      }
+
+      if (text.includes("purring") || text.includes("blink")) {
+        return "Soft purring with slow blinking is usually a relaxed, trusting signal. If her posture is loose and appetite is normal, she is likely comfortable.";
+      }
+
+      if (text.includes("vet")) {
+        return "Call a vet if you notice breathing trouble, repeated vomiting, no food for a day, injury, severe weakness, crying in pain, or sudden unusual behavior.";
+      }
+
+      return "I can help translate Whiskers's cues. Tell me what she is doing, when it started, and whether food, water, energy, or litter habits changed.";
+    }
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) return;
+
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      utterance.pitch = 1.05;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function sendQuestion(question) {
+      const trimmed = question.trim();
+      if (!trimmed) return;
+
+      addMessage("user", trimmed);
+      chatInput.value = "";
+
+      window.setTimeout(() => {
+        lastBotReply = buildReply(trimmed);
+        addMessage("bot", lastBotReply);
+        speak(lastBotReply);
+      }, 450);
+    }
+
+    chatForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      sendQuestion(chatInput.value);
+    });
+
+    quickButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        sendQuestion(button.dataset.prompt);
+      });
+    });
+
+    speakLastButton.addEventListener("click", () => {
+      speak(lastBotReply || "Hi, I am PawBot. Tell me what your pet is doing, or use the mic button and speak your question.");
+    });
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+
+      recognition.addEventListener("start", () => {
+        voiceButton.classList.add("is-listening");
+        voiceButton.textContent = "Stop";
+      });
+
+      recognition.addEventListener("end", () => {
+        voiceButton.classList.remove("is-listening");
+        voiceButton.textContent = "Mic";
+      });
+
+      recognition.addEventListener("result", (event) => {
+        const transcript = event.results[0][0].transcript;
+        chatInput.value = transcript;
+        sendQuestion(transcript);
+      });
+
+      voiceButton.addEventListener("click", () => {
+        if (voiceButton.classList.contains("is-listening")) {
+          recognition.stop();
+          return;
+        }
+
+        recognition.start();
+      });
+    } else {
+      voiceButton.addEventListener("click", () => {
+        addMessage("bot", "Voice input is not supported in this browser. You can still type your question.");
+      });
+    }
+
+    PawAIAuth.bindLogout("#logoutLink");
+
+    (async function initChatbotPage() {
+      const user = await PawAIAuth.requireUser();
+      if (!user) return; // requireUser already redirected to the login page
+
+      try {
+        const pets = await PawAIApi.listPets();
+        const pet = pets[0];
+        if (pet) {
+          const petCardName = document.getElementById("petCardName");
+          if (petCardName) petCardName.textContent = pet.name;
+
+          const meta = [pet.breed, pet.age, pet.gender].filter(Boolean).join(", ");
+          const petCardMeta = document.getElementById("petCardMeta");
+          if (petCardMeta) petCardMeta.textContent = meta || "No details yet";
+
+          const petAvatar = document.getElementById("petAvatar");
+          if (petAvatar) petAvatar.alt = `${pet.name}'s photo`;
+
+          const panelCopy = document.getElementById("panelCopy");
+          if (panelCopy) {
+            panelCopy.textContent = `Talk or type about ${pet.name}. PawBot can explain behavior, food concerns, moods, and when it may be time to contact a vet.`;
+          }
+
+          const initialBotMessage = document.getElementById("initialBotMessage");
+          if (initialBotMessage) {
+            initialBotMessage.textContent = `Hi, I am PawBot. Tell me what ${pet.name} is doing, or use the mic button and speak your question.`;
+          }
+        }
+      } catch (error) {
+        // No pet profile yet, or a transient error - the generic copy
+        // already in the markup covers that case.
+      }
+    })();
+  </script>
+</body>
+</html>

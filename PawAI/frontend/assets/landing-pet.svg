@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Cat walking through a softly lit room</title>
+  <desc id="desc">A dark, atmospheric PawAI landing-page illustration of a curious cat.</desc>
+  <defs>
+    <linearGradient id="room" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#342036"/><stop offset=".5" stop-color="#171526"/><stop offset="1" stop-color="#090a10"/></linearGradient>
+    <linearGradient id="cat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f1bd86"/><stop offset="1" stop-color="#b7655f"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#room)"/><circle cx="1260" cy="155" r="260" fill="#ff3d91" opacity=".2"/><circle cx="1480" cy="700" r="260" fill="#2ee98f" opacity=".1"/>
+  <path d="M0 690 1600 570v330H0Z" fill="#0c0d15" opacity=".65"/><path d="M600 670c205-40 453-38 650 35l-40 73H566Z" fill="#0a0b12" opacity=".55"/>
+  <ellipse cx="1120" cy="710" rx="290" ry="70" fill="#04050a" opacity=".45"/>
+  <path d="M910 602c-40-132 49-250 184-230 111 16 162 89 155 192l-22 97-81-1-1 84h-63l-10-100-85-2-25 104h-66Z" fill="url(#cat)"/>
+  <path d="m954 430 25-113 74 70Zm191-35 77-70 13 113Z" fill="#e99978"/>
+  <ellipse cx="1030" cy="493" rx="14" ry="19" fill="#1c1720"/><ellipse cx="1157" cy="493" rx="14" ry="19" fill="#1c1720"/><path d="m1080 541 20 0-10 13Z" fill="#83474d"/><path d="M1090 554v25m-64-13 54 8m74-8-54 8" stroke="#714552" stroke-width="7" stroke-linecap="round"/>
+  <path d="M1242 538c119-54 147 74 58 113" fill="none" stroke="#c87967" stroke-width="34" stroke-linecap="round"/>
+</svg>

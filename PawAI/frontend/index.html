@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PawAI - Understand Your Pet Better</title>
+  <style>
+    :root {
+      --bg: #090a10;
+      --panel: rgba(20, 18, 24, .88);
+      --line: #2d2833;
+      --text: #f8f5fa;
+      --muted: #a9a2b6;
+      --pink: #ff3d91;
+      --pink-soft: #ff5aa4;
+      --green: #2ee98f;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .45);
+      --pink-glow: 0 18px 42px rgba(255, 61, 145, .28);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 78% 8%, rgba(255, 61, 145, .22), transparent 34rem),
+        radial-gradient(circle at 16% 92%, rgba(46, 233, 143, .11), transparent 28rem),
+        linear-gradient(135deg, #08090f 0%, #121018 58%, #08090f 100%);
+      font-family: var(--font);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { border: 0; cursor: pointer; font: inherit; }
+    img { display: block; max-width: 100%; }
+
+    .page {
+      width: min(1200px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+
+    .navbar,
+    .brand,
+    .nav-links,
+    .hero-actions,
+    .stat-row,
+    .feature-grid,
+    .step-grid,
+    .footer-links {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 16px;
+      z-index: 10;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 28px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 22px;
+      background: rgba(9, 10, 16, .72);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .26);
+      animation: dropIn .65s ease both;
+    }
+
+    .brand {
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+      animation: logoPulse 3.8s ease-in-out infinite;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .brand-accent,
+    .accent {
+      color: var(--pink);
+    }
+
+    .nav-links {
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link,
+    .primary-btn,
+    .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 14px;
+      font-weight: 850;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .nav-link,
+    .ghost-btn {
+      border: 1px solid rgba(255, 61, 145, .34);
+      color: var(--pink);
+      background: rgba(255, 61, 145, .09);
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+    }
+
+    .nav-link:hover,
+    .primary-btn:hover,
+    .ghost-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(255, 61, 145, .24);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 650px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      animation: riseIn .7s ease both;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: conic-gradient(from 120deg, transparent, rgba(255, 61, 145, .18), transparent, rgba(46, 233, 143, .12), transparent);
+      animation: slowSpin 14s linear infinite;
+      opacity: .7;
+    }
+
+    .hero-bg-video {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 35%;
+    }
+
+    .hero-bg-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(100deg, rgba(6, 6, 11, .94) 0%, rgba(6, 6, 11, .74) 32%, rgba(6, 6, 11, .3) 58%, rgba(6, 6, 11, .08) 76%);
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 620px;
+      min-height: 650px;
+      padding: 58px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 34px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 61, 145, .35);
+      border-radius: 999px;
+      color: var(--pink);
+      background: rgba(255, 61, 145, .11);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 680px;
+      margin: 20px 0 18px;
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: .95;
+      letter-spacing: 0;
+    }
+
+    .hero-word {
+      display: inline-block;
+      opacity: 0;
+      animation: wordPop .72s cubic-bezier(.2, 1.6, .32, 1) forwards, wordFloat 3.8s ease-in-out infinite;
+    }
+
+    .hero-word:nth-child(1) { animation-delay: .06s, 1s; }
+    .hero-word:nth-child(2) { animation-delay: .2s, 1.16s; }
+    .hero-word:nth-child(3) { animation-delay: .34s, 1.32s; }
+
+    .hero-word.accent {
+      background: linear-gradient(90deg, #fff, var(--pink-soft), var(--pink), #fff);
+      background-size: 260% 100%;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      text-shadow: 0 0 24px rgba(255, 61, 145, .45);
+      animation: wordPop .72s cubic-bezier(.2, 1.6, .32, 1) .34s forwards, wordFloat 3.8s ease-in-out 1.3s infinite, textShimmer 2.5s linear 1s infinite;
+    }
+
+    .lead {
+      max-width: 590px;
+      margin-bottom: 30px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+      animation: copySlide .72s ease .48s both;
+    }
+
+    .hero-actions {
+      gap: 12px;
+      flex-wrap: wrap;
+      animation: copySlide .72s ease .62s both;
+    }
+
+    .floating-card {
+      position: absolute;
+      right: 30px;
+      bottom: 30px;
+      width: min(330px, calc(100% - 60px));
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 22px;
+      background: rgba(20, 18, 24, .78);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      z-index: 5;
+      animation: floatCard 4.8s ease-in-out infinite;
+    }
+
+    .stat-row {
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .stat strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 20px;
+    }
+
+    .section {
+      margin-top: 26px;
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(20, 18, 24, .84);
+      box-shadow: var(--shadow);
+      animation: riseIn .72s ease both;
+    }
+
+    .section-header {
+      max-width: 680px;
+      margin-bottom: 22px;
+    }
+
+    .section h2 {
+      margin-bottom: 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.05;
+    }
+
+    .section p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .feature-grid,
+    .step-grid {
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .feature,
+    .step {
+      flex: 1 1 220px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .035);
+      transition: transform .22s ease, border-color .22s ease, background .22s ease;
+    }
+
+    .feature:hover,
+    .step:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 61, 145, .5);
+      background: rgba(255, 61, 145, .08);
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 14px;
+      border-radius: 15px;
+      color: #fff;
+      background: rgba(255, 61, 145, .24);
+      font-weight: 900;
+    }
+
+    .step-number {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: var(--pink-glow); }
+      50% { box-shadow: 0 18px 54px rgba(255, 61, 145, .48), 0 0 0 8px rgba(255, 61, 145, .08); }
+    }
+
+    @keyframes slowSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes catDrift {
+      0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+
+      45% {
+        transform: translate3d(-16px, -5px, 0) scale(1.025);
+      }
+
+      70% {
+        transform: translate3d(8px, 0, 0) scale(1.01);
+      }
+    }
+
+    @keyframes glowBreathe {
+      0%, 100% {
+        opacity: .65;
+        transform: scale(.96);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+    }
+
+    @keyframes wordPop {
+      0% { opacity: 0; transform: translateY(34px) rotate(-4deg) scale(.86); filter: blur(8px); }
+      70% { opacity: 1; transform: translateY(-6px) rotate(2deg) scale(1.05); filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes wordFloat {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      50% { transform: translateY(-5px) rotate(-1deg); }
+    }
+
+    @keyframes textShimmer {
+      from { background-position: 0% 50%; }
+      to { background-position: 260% 50%; }
+    }
+
+    @keyframes copySlide {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .page { width: min(100% - 28px, 720px); }
+      .navbar { align-items: flex-start; flex-direction: column; }
+      .nav-links { width: 100%; justify-content: flex-start; }
+      .hero { min-height: 0; }
+      .hero-copy { max-width: 100%; min-height: 520px; padding: 34px; }
+      .floating-card { right: 20px; bottom: 20px; }
+      .feature-grid, .step-grid { flex-direction: column; }
+    }
+
+    @media (max-width: 560px) {
+      .brand { font-size: 21px; }
+      .nav-link, .primary-btn, .ghost-btn { width: 100%; }
+      .hero-copy, .section { padding: 22px; }
+      .hero-copy { min-height: 460px; }
+      .floating-card { position: relative; right: auto; bottom: auto; width: calc(100% - 28px); margin: -80px auto 18px; }
+      .stat-row, .hero-actions { flex-direction: column; }
+      .stat { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html" aria-label="PawAI landing page">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-2.8-2-4.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+          </svg>
+        </span>
+        Paw<span class="brand-accent">AI</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Landing navigation">
+        <a class="nav-link" href="#features">Features</a>
+        <a class="nav-link" href="08-help.html">Help</a>
+        <a class="nav-link" href="07-contact.html">Contact Us</a>
+        <a class="ghost-btn" href="02-login.html">Login</a>
+        <a class="primary-btn" href="01-create-account.html">Create Account</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="landingTitle">
+        <video class="hero-bg-video" src="assets/landing-cat-walk.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+        <div class="hero-bg-overlay" aria-hidden="true"></div>
+
+        <div class="hero-copy">
+          <span class="pill">Pet-first AI care</span>
+          <h1 id="landingTitle">
+            <span class="hero-word">Decode</span>
+            <span class="hero-word">your</span>
+            <span class="hero-word accent">pet.</span>
+          </h1>
+          <p class="lead">PawAI turns photos, sounds, and behavior moments into clear, friendly insights so you can understand what your pet may be feeling.</p>
+          <div class="hero-actions">
+            <a class="primary-btn" href="01-create-account.html">Start Free</a>
+            <a class="ghost-btn" href="02-login.html">I Already Have an Account</a>
+          </div>
+        </div>
+
+        <aside class="floating-card" aria-label="PawAI insight preview">
+          <span class="pill">Live insight</span>
+          <h2>Happy, calm, and curious.</h2>
+          <p class="muted">PawAI detected relaxed posture, bright eyes, and comfortable attention cues.</p>
+          <div class="stat-row">
+            <div class="stat"><strong>94%</strong><span class="muted">Mood match</span></div>
+            <div class="stat"><strong>6</strong><span class="muted">Signals</span></div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="features" class="section" aria-labelledby="featuresTitle">
+        <div class="section-header">
+          <span class="pill">Why PawAI</span>
+          <h2 id="featuresTitle">A friendlier way to understand care.</h2>
+          <p>Designed for pet parents who want quick answers, softer guidance, and an app that feels good to return to.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <span class="feature-icon">AI</span>
+            <h3>Behavior Analysis</h3>
+            <p>Upload photos, videos, or audio and get practical mood and behavior cues.</p>
+          </article>
+          <article class="feature">
+            <span class="feature-icon">PB</span>
+            <h3>PawBot Chat</h3>
+            <p>Ask follow-up questions with text or voice and get simple explanations.</p>
+          </article>
+          <article class="feature">
+            <span class="feature-icon">HI</span>
+            <h3>Care History</h3>
+            <p>Keep recent insights connected so patterns become easier to notice.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="stepsTitle">
+        <div class="section-header">
+          <span class="pill">How it works</span>
+          <h2 id="stepsTitle">Capture, analyze, understand.</h2>
+        </div>
+
+        <div class="step-grid">
+          <article class="step">
+            <span class="step-number">01</span>
+            <h3>Create your pet profile</h3>
+            <p>Add basic details so PawAI can personalize the experience.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">02</span>
+            <h3>Share a moment</h3>
+            <p>Use camera, audio, or gallery uploads from the dashboard.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">03</span>
+            <h3>Ask PawBot</h3>
+            <p>Turn analysis results into clear next steps and care ideas.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>&copy; 2026 PawAI</span>
+      <div class="footer-links">
+        <a href="07-contact.html">Contact Us</a>
+        <a href="08-help.html">Help</a>
+        <a href="02-login.html">Login</a>
+      </div>
+    </footer>
+  </div>
+  <script src="assets/js/api.js"></script>
+</body>
+</html>

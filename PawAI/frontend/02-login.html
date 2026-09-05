@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - PawAI</title>
+  <style>
+    :root {
+      --bg: #090a10;
+      --panel: #141218;
+      --panel-soft: #1c1621;
+      --field: #100f15;
+      --line: #2d2833;
+      --line-strong: #453545;
+      --text: #f8f5fa;
+      --muted: #9c96aa;
+      --pink: #ff3d91;
+      --pink-soft: #ff5aa4;
+      --green: #2ee98f;
+      --danger: #ff6f91;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .45);
+      --pink-glow: 0 18px 42px rgba(255, 61, 145, .28);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 78% 8%, rgba(255, 61, 145, .18), transparent 34rem),
+        radial-gradient(circle at 12% 90%, rgba(46, 233, 143, .09), transparent 26rem),
+        linear-gradient(135deg, #08090f 0%, #121018 58%, #08090f 100%);
+      font-family: var(--font);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 40px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 34px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+      font-weight: 900;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .brand .brand-accent,
+    .accent-link {
+      color: var(--pink);
+    }
+
+    .ghost-btn,
+    .primary-btn,
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      border-radius: 14px;
+      font-weight: 850;
+    }
+
+    .ghost-btn,
+    .social-btn {
+      border: 1px solid rgba(255, 61, 145, .38);
+      color: var(--pink);
+      background: rgba(255, 61, 145, .1);
+    }
+
+    .ghost-btn {
+      padding: 0 20px;
+    }
+
+    .login-wrap {
+      display: grid;
+      min-height: calc(100vh - 150px);
+      place-items: center;
+    }
+
+    .login-card {
+      width: min(520px, 100%);
+      padding: 42px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(255, 61, 145, .13), transparent 23rem),
+        rgba(20, 18, 24, .94);
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .card-header .brand-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 14px;
+      border-radius: 16px;
+      font-size: 20px;
+    }
+
+    h1,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: 38px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    input {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 13px;
+      outline: none;
+      color: var(--text);
+      background: var(--field);
+      transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    input::placeholder {
+      color: #6f6878;
+    }
+
+    input:focus {
+      border-color: var(--pink);
+      background: #131018;
+      box-shadow: 0 0 0 4px rgba(255, 61, 145, .14);
+    }
+
+    .password-row {
+      position: relative;
+    }
+
+    .password-row input {
+      padding-right: 52px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 8px;
+      bottom: 7px;
+      width: 38px;
+      height: 36px;
+      border-radius: 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .form-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 2px 0 4px;
+      font-size: 14px;
+    }
+
+    .remember {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .remember input {
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+      min-height: 18px;
+      accent-color: var(--pink);
+    }
+
+    .primary-btn {
+      width: 100%;
+      gap: 10px;
+      min-height: 52px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-soft));
+      box-shadow: var(--pink-glow);
+      font-size: 16px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 25px 0;
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .social-btn {
+      min-height: 46px;
+      padding: 0 12px;
+    }
+
+    .signup-text {
+      margin: 25px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .signup-text a,
+    .forgot-link {
+      color: var(--pink);
+      font-weight: 850;
+    }
+
+    .message {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      border: 1px solid rgba(46, 233, 143, .32);
+      color: var(--green);
+      background: rgba(46, 233, 143, .1);
+    }
+
+    .message.error {
+      border: 1px solid rgba(255, 111, 145, .38);
+      color: var(--danger);
+      background: rgba(255, 111, 145, .1);
+    }
+
+    .brand-icon {
+      animation: logoPulse 3.8s ease-in-out infinite;
+      transition: transform .22s ease, filter .22s ease;
+    }
+
+    .brand:hover .brand-icon,
+    .card-header .brand-icon:hover {
+      transform: rotate(-6deg) scale(1.08);
+      filter: drop-shadow(0 0 14px rgba(255, 61, 145, .7));
+    }
+
+    .login-card {
+      animation: riseIn .72s ease both;
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+    }
+
+    .login-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 61, 145, .45);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .52);
+    }
+
+    .primary-btn,
+    .ghost-btn,
+    .social-btn {
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .primary-btn:hover,
+    .ghost-btn:hover,
+    .social-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(255, 61, 145, .28);
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes logoPulse {
+      0%,
+      100% {
+        box-shadow: var(--pink-glow);
+      }
+
+      50% {
+        box-shadow: 0 18px 54px rgba(255, 61, 145, .48), 0 0 0 8px rgba(255, 61, 145, .08);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 28px, 520px);
+        padding-top: 20px;
+      }
+
+      .navbar {
+        margin-bottom: 20px;
+      }
+
+      .brand {
+        font-size: 21px;
+      }
+
+      .ghost-btn {
+        min-height: 42px;
+        padding: 0 14px;
+      }
+
+      .login-card {
+        padding: 24px;
+        border-radius: 20px;
+      }
+
+      .form-options {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .social-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="navbar">
+      <a class="brand" href="index.html" aria-label="PawAI landing page">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+          </svg>
+        </span>
+        Paw<span class="brand-accent">AI</span>
+      </a>
+      <a class="ghost-btn" href="01-create-account.html">Create Account</a>
+    </header>
+
+    <main class="login-wrap">
+      <section class="login-card" aria-labelledby="loginTitle">
+        <div class="card-header">
+          <div class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M8.1 10.4c-1.4.2-2.6-1.1-2.8-2.9C5.1 5.7 6 4.1 7.3 3.9c1.4-.2 2.6 1.1 2.8 2.9.2 1.8-.7 3.4-2 3.6Zm7.8 0c-1.3-.2-2.2-1.8-2-3.6.2-1.8 1.4-3.1 2.8-2.9 1.3.2 2.2 1.8 2 3.6-.2 1.8-1.4 3.1-2.8 2.9ZM4.4 14.2c-1.1.4-2.4-.4-2.9-1.8-.5-1.4-.1-2.8 1-3.2 1.1-.4 2.4.4 2.9 1.8.5 1.4.1 2.8-1 3.2Zm15.2 0c-1.1-.4-1.5-1.8-1-3.2.5-1.4 1.8-2.2 2.9-1.8 1.1.4 1.5 1.8 1 3.2-.5 1.4-1.8 2.2-2.9 1.8Zm-7.6 6.2c-3.5 0-6.4-1.3-6.4-3.8 0-1.5 1.2-2.2 2.2-3 .8-.6 1.4-1.3 2.1-2.2.6-.8 1.2-1.3 2.1-1.3s1.5.5 2.1 1.3c.7.9 1.3 1.6 2.1 2.2 1 .8 2.2 1.5 2.2 3 0 2.5-2.9 3.8-6.4 3.8Z"/>
+            </svg>
+          </div>
+          <h1 id="loginTitle">Welcome Back!</h1>
+          <p class="muted">Login to continue your PawAI journey.</p>
+        </div>
+
+        <form id="loginForm" class="form" novalidate>
+          <div class="field">
+            <label for="loginId">Username or Email</label>
+            <input id="loginId" name="loginId" type="text" placeholder="Enter your username or email" autocomplete="username" required>
+          </div>
+
+          <div class="field password-row">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" minlength="6" required>
+            <button id="togglePassword" class="toggle-password" type="button" aria-label="Show password">Show</button>
+          </div>
+
+          <div class="form-options">
+            <label class="remember" for="rememberMe">
+              <input id="rememberMe" name="rememberMe" type="checkbox">
+              Remember me
+            </label>
+            <a class="forgot-link" href="#" data-action="Forgot password UI only. Connect OTP or backend flow later.">Forgot Password?</a>
+          </div>
+
+          <button class="primary-btn" type="submit">Login</button>
+          <div id="formMessage" class="message" role="status" aria-live="polite"></div>
+        </form>
+
+        <div class="divider">or continue with</div>
+
+        <div class="social-grid" aria-label="Social login options">
+          <button class="social-btn" type="button" data-provider="Google">Google</button>
+          <button class="social-btn" type="button" data-provider="Apple">Apple</button>
+          <button class="social-btn" type="button" data-provider="Facebook">Facebook</button>
+        </div>
+
+        <p class="signup-text">Don't have an account? <a href="01-create-account.html">Create Account</a></p>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script>
+    const loginForm = document.querySelector("#loginForm");
+    const loginId = document.querySelector("#loginId");
+    const password = document.querySelector("#password");
+    const togglePassword = document.querySelector("#togglePassword");
+    const formMessage = document.querySelector("#formMessage");
+    const rememberMeInput = document.querySelector("#rememberMe");
+    const forgotLink = document.querySelector(".forgot-link");
+    const socialButtons = document.querySelectorAll("[data-provider]");
+
+    function showMessage(type, text) {
+      formMessage.textContent = text;
+      formMessage.className = `message ${type} show`;
+    }
+
+    function getFirstInvalidField(form) {
+      return Array.from(form.elements).find((field) => {
+        if (!field.willValidate) return false;
+        return !field.checkValidity();
+      });
+    }
+
+    togglePassword.addEventListener("click", () => {
+      const isHidden = password.type === "password";
+      password.type = isHidden ? "text" : "password";
+      togglePassword.textContent = isHidden ? "Hide" : "Show";
+      togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+    });
+
+    forgotLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      showMessage("error", "Password reset is not available yet.");
+    });
+
+    socialButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        showMessage("error", `${button.dataset.provider} sign-in is not available yet. Please use your PawAI username/email and password.`);
+      });
+    });
+
+    const submitButton = loginForm.querySelector(".primary-btn");
+    let isSubmitting = false;
+
+    function setLoading(loading) {
+      isSubmitting = loading;
+      submitButton.disabled = loading;
+      submitButton.textContent = loading ? "Logging in..." : "Login";
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (isSubmitting) return; // guard against duplicate submissions
+
+      const invalidField = getFirstInvalidField(loginForm);
+      if (invalidField) {
+        invalidField.focus();
+        showMessage("error", "Please enter a valid username/email and password.");
+        return;
+      }
+
+      // Note on "Remember me": the backend issues one fixed-length session
+      // (7 days) per login and does not currently support a separate
+      // "remember me" duration - see
+      // backend/app/core/security.py:new_session_expiry(). The checkbox
+      // (rememberMeInput.checked) is left in the UI for a future backend
+      // change, but it has no effect on session length today, and we never
+      // fake a longer/shorter session on the client.
+
+      setLoading(true);
+      try {
+        await PawAIApi.login(loginId.value.trim(), password.value);
+        showMessage("success", "Login successful. Opening your PawAI home page.");
+        window.location.href = "03-home.html";
+      } catch (error) {
+        if (error instanceof PawAIApi.ApiError && error.isNetworkError) {
+          showMessage("error", error.message);
+        } else if (error instanceof PawAIApi.ApiError && error.status === 401) {
+          showMessage("error", "Incorrect username/email or password. Please try again.");
+        } else if (error instanceof PawAIApi.ApiError) {
+          showMessage("error", error.message);
+        } else {
+          showMessage("error", "Something went wrong. Please try again.");
+        }
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

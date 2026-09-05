@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">A relaxed cat with a heart toy</title>
+  <desc id="desc">A warm PawAI pet profile illustration.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2a1830"/><stop offset="1" stop-color="#100f18"/></linearGradient>
+    <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6c9a3"/><stop offset="1" stop-color="#c77d69"/></linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="72" fill="url(#bg)"/>
+  <circle cx="530" cy="100" r="100" fill="#ff3d91" opacity=".18"/><circle cx="120" cy="570" r="120" fill="#2ee98f" opacity=".1"/>
+  <ellipse cx="320" cy="485" rx="210" ry="92" fill="#090a10" opacity=".35"/>
+  <path d="M155 300 180 157l91 66c31-15 67-15 98 0l91-66 25 143v116c0 96-74 154-165 154S155 512 155 416Z" fill="url(#fur)"/>
+  <path d="m185 184 18 91 48-43Zm270 0-18 91-48-43Z" fill="#e99b83"/>
+  <ellipse cx="256" cy="352" rx="15" ry="20" fill="#221823"/><ellipse cx="384" cy="352" rx="15" ry="20" fill="#221823"/>
+  <path d="M301 393q19 16 38 0l-19 18Z" fill="#8e4c54"/><path d="M320 412v30m-53-14 43 8m63-8-43 8" stroke="#6d4450" stroke-width="8" stroke-linecap="round"/>
+  <path d="M320 517c-43-38-86-69-86-111 0-36 45-48 86-6 41-42 86-30 86 6 0 42-43 73-86 111Z" fill="#ff3d91"/>
+</svg>
